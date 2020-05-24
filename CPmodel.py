@@ -12,7 +12,7 @@ def maxdist(pacientes_loc, hospitales_loc):
                 max_dist = d
     return max_dist
 
-def OrganizePandemic(n_camas_en_hospitales, pacientes_contagio, pacientes_loc, hospitales_loc):
+def OrganizePandemic(n_camas_en_hospitales, pacientes_contagio, pacientes_loc, hospitales_loc, heuvar, heuval):
     model = cp_model.CpModel()
     
     # variables y dominios
@@ -21,6 +21,8 @@ def OrganizePandemic(n_camas_en_hospitales, pacientes_contagio, pacientes_loc, h
         for j in range(n_camas_en_hospitales[i]):
             for k in range(len(pacientes_loc)):
                 x[(i,j,k)] = model.NewBoolVar("x_" + str(i) + "_" + str(j) + "_" + str(k))
+
+    #optimización
     max_dist = maxdist(pacientes_loc, hospitales_loc)
     l = []
     for i in range(len(hospitales_loc)):
@@ -38,6 +40,9 @@ def OrganizePandemic(n_camas_en_hospitales, pacientes_contagio, pacientes_loc, h
         for i in range(len(hospitales_loc)):
             n_paciente_en_camas_hospitales += [sum([x[(i,j,k)] for j in range(n_camas_en_hospitales[i])])]
         model.Add(sum(n_paciente_en_camas_hospitales) <= 1)
+
+    #heuristicas
+    model.AddDecisionStrategy(x, heuvar, heuval)
 
     #solver
     solver = cp_model.CpSolver()
