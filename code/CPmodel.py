@@ -42,7 +42,12 @@ def OrganizePandemic(n_camas_en_hospitales, pacientes_contagio, pacientes_loc, h
         model.Add(sum(n_paciente_en_camas_hospitales) <= 1)
 
     #heuristicas
-    model.AddDecisionStrategy(x, heuvar, heuval)
+    for i in range(len(hospitales_loc)):
+        for j in range(n_camas_en_hospitales[i]):
+            pacientes = []
+            for k in range(len(pacientes_loc)):
+              pacientes += [x[(i,j,k)]]
+            model.AddDecisionStrategy(pacientes, heuvar, heuval)
 
     #solver
     solver = cp_model.CpSolver()

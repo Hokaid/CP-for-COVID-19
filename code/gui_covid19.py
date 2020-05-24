@@ -8,7 +8,7 @@ raiz.title("COVID-19 PANDEMIA EN PERÚ") #Cambiar el nombre de la ventana
 raiz.geometry("520x480") #Configurar tamaño
 raiz.resizable(0,0)
 
-fondo = PhotoImage(file="imagenes\\fondo.gif")
+fondo = PhotoImage(file="..\\imagenes\\fondo.gif")
 background_label = Label(image=fondo)
 background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
