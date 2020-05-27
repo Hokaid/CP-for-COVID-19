@@ -1,7 +1,7 @@
 from ortools.sat.python import cp_model # CP-SAT solver
 
 def dist(p1,p2):
-  return int(((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5)
+  return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5
 
 def maxdist(pacientes_loc, hospitales_loc):
     max_dist = 0
