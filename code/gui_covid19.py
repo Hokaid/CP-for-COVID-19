@@ -1,8 +1,7 @@
 from tkinter import *
 from tkinter import ttk
-from data import *
+from data_visualize import *
 from CPmodel import *
-from visualize import *
 
 raiz = Tk() 
 raiz.title("COVID-19 PANDEMIA EN PERÚ") #Cambiar el nombre de la ventana 
@@ -32,14 +31,14 @@ CHval.current(0)
 CHval.place(x=100, y=260)
 
 def vdata():
-    visualize_data(pacientes_contagio, pacientes_loc, hospitales_loc)
+    #visualize_data()
+    visualize_map()
 
 def vsolution():
     plot_lineas = OrganizePandemic(n_camas_en_hospitales, pacientes_contagio,
                                    pacientes_loc, hospitales_loc,
                                    CHvar.current(), CHval.current())
-    if plot_lineas != 0: visualize_solution(plot_lineas, pacientes_contagio,
-                                            pacientes_loc, hospitales_loc)
+    if plot_lineas != 0: visualize_solution(plot_lineas)
 
 Button(raiz, text="Ver datos del problema",
           command=vdata).place(x = 100, y=70)

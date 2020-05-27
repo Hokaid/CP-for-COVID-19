@@ -1,0 +1,5 @@
+Asymptomatic - 20.2
+Mild - 34.7
+Strong - 25.2
+Hospitalization - 13.8
+UCI - 6.1
