@@ -4,7 +4,7 @@ San Isidro,Clinica Angloameriacana,-12.106690,-77.046930,7,55
 San Isidro,Clinica Internacional,-12.101090,-77.035280,10,79
 Miraflores,Hospital EsSalud Suarez Angamos,-12.106902,-77.055142,0,25
 Miraflores,Hospital Casimiro Ulloa,-12.128109,-77.017737,0,25
-Miraflores,Hospital Central FAP,-12.103803,-77.02999310,79
+Miraflores,Hospital Central FAP,-12.103803,-77.029993,10,79
 Miraflores,Clinica Delgado,-12.115010,-77.033510,6,47
 Miraflores,Clinica Good Hope,-12.125120,-77.033820,7,55
 Surquillo,Instituto Nacional de Enfermedades Neoplasicas,-12.112442,-76.998277,10,79

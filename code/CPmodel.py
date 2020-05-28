@@ -53,17 +53,17 @@ def OrganizePandemic(n_camas_en_hospitales, pacientes_contagio, pacientes_loc, h
     solver = cp_model.CpSolver()
     status = solver.Solve(model)
     if status == cp_model.OPTIMAL:
-        print("N pacientes atendidos:",solver.ObjectiveValue())
-        print("Tiempo:",solver.WallTime())
+        x1 = []
         plot_lineas = [[] for _ in range(len(hospitales_loc))]
         for i in range(len(hospitales_loc)):
             for j in range(n_camas_en_hospitales[i]):
                 for k in range(len(pacientes_loc)):
+                    x1 += [solver.Value(x[(i,j,k)])]
                     if solver.Value(x[(i,j,k)]) == 1:
                         linea_abcisa = [hospitales_loc[i][0], pacientes_loc[k][0]]
                         linea_ordenada = [hospitales_loc[i][1], pacientes_loc[k][1]]
                         plot_lineas[i].append([linea_abcisa, linea_ordenada])
-        return plot_lineas
+        return plot_lineas, sum(x1), solver.WallTime()
     return 0
     
         

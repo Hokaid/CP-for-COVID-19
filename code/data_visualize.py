@@ -4,12 +4,13 @@ from csv import reader
 import matplotlib.pyplot as plt # Data visualization
 plt.rcParams["figure.figsize"] = (40,15)
 from itertools import cycle
+import webbrowser
 
 n_hospitales = 10 #10 hospitales
-n_camas_en_hospitales = [25,160,25,62,89,25,25,89,53,62] #numero de camas
+n_camas_en_hospitales = [2,18,7,10,2,2,10,6,7,10] #numero de camas
 n_camas_total = sum(n_camas_en_hospitales)
 
-def cargarCSV(csv):
+def cargarCSV(csv, la, lo):
     latitude_list = []
     longitude_list = []
     cordenadas = []
@@ -20,16 +21,17 @@ def cargarCSV(csv):
         list_of_rows = list(csv_reader)
         #print(list_of_rows)
     for item in list_of_rows:
-        latitude_list.append(float(item[1]))
-        longitude_list.append(float(item[3]))
+        latitude_list.append(float(item[la]))
+        longitude_list.append(float(item[lo]))
     cordenadas.append(latitude_list)
     cordenadas.append(longitude_list)
     return cordenadas
 
-miraflores = cargarCSV('..\csv files\Miraflores.csv')
-sanIsidro = cargarCSV('..\csv files\SanIsidro.csv')
-surquillo = cargarCSV('..\csv files\Surquillo.csv')
-magdalena = cargarCSV('..\csv files\Magdalena.csv')
+miraflores = cargarCSV('..\csv files\Miraflores.csv', 1, 3)
+sanIsidro = cargarCSV('..\csv files\SanIsidro.csv', 1, 3)
+surquillo = cargarCSV('..\csv files\Surquillo.csv', 1, 3)
+magdalena = cargarCSV('..\csv files\Magdalena.csv', 1, 3)
+hospitales = cargarCSV('..\csv files\Hospitales+Camas.txt', 2, 3)
 
 #Localizacion Pacientes
 n_pacientes = len(miraflores[0])+len(sanIsidro[0])+len(surquillo[0])+len(magdalena[0])
@@ -48,14 +50,9 @@ for i in range(cantpaci, n_pacientes):
     pacientes_loc[i] = (magdalena[1][i-cantpaci], magdalena[0][i-cantpaci])
 
 #Localizacion Hospitales
-hospitales_loc = [(-77.070045,-12.092470), (-77.018283,-12.090713),
-                  (-77.055142,-12.106902), (-77.046930,-12.106690),
-                  (-77.035280,-12.101090), (-77.055142,-12.106902),
-                  (-77.017737,-12.128109), (-77.029993,-12.103803),
-                  (-77.033510,-12.115010), (-77.033820,-12.125120)]
-hospitales = [[0]*n_hospitales,[0]*n_hospitales]
-for i in range(len(hospitales_loc)):
-    hospitales[1][i], hospitales[0][i] = hospitales_loc[i]
+hospitales_loc = [(0, 0) for _ in range(n_hospitales)]
+for i in range(len(hospitales[0])):
+    hospitales_loc[i] = (hospitales[1][i], hospitales[0][i])
 
 #grado de contagio
 pacientes_contagio = [0 for _ in range(n_pacientes)]
@@ -77,7 +74,7 @@ def visualize_data():
     color_contagio = ["#%02x0000" % (sev) for sev in sombra_contagio]
     tamano_contagio = [k**2.5 for k in pacientes_contagio]
     plt.scatter(*zip(*pacientes_loc), s=tamano_contagio, c=color_contagio, label="Patients")
-    plt.scatter(*zip(*hospitales_loc), s=1000, c="b", marker="P", label="Hospitals")
+    plt.scatter(*zip(*hospitales_loc), s=200, c="b", marker="P", label="Hospitals")
     plt.legend()
     plt.axis('off')
     plt.show()
@@ -87,7 +84,7 @@ def visualize_solution(plot_lineas):
     color_contagio = ["#%02x0000" % (sev) for sev in sombra_contagio]
     tamano_contagio = [k**2.5 for k in pacientes_contagio]
     plt.scatter(*zip(*pacientes_loc), s=tamano_contagio, c=color_contagio, label="Pacientes", zorder=2)
-    plt.scatter(*zip(*hospitales_loc), s=1000, c="b", marker="P", label="Hospitales", zorder=3)
+    plt.scatter(*zip(*hospitales_loc), s=200, c="b", marker="P", label="Hospitales", zorder=3)
     colores = cycle('bgrcmk')
     for i in range(len(hospitales_loc)):
         c = next(colores)
@@ -99,10 +96,11 @@ def visualize_solution(plot_lineas):
 
 def visualize_map():
     gmap = gmplot.GoogleMapPlotter(-12.1103929, -77.0347696, 14)
-    gmap.scatter( hospitales[0], hospitales[1], '#0000FF', size = 100, marker = False )
     gmap.scatter( miraflores[0], miraflores[1], '#FF3333', size = 20, marker = False )
     gmap.scatter( sanIsidro[0], sanIsidro[1], '#006633', size = 20, marker = False )
     gmap.scatter( surquillo[0], surquillo[1], '#CC0066', size = 20, marker = False )
     gmap.scatter( magdalena[0], magdalena[1], '#999900', size = 20, marker = False )
+    gmap.scatter( hospitales[0], hospitales[1], '#000000', size = 100, marker = False )
     gmap.apikey = "AIzaSyA_2cjPy9AbF1aU1pa1oOo7_JmezBCy01c"
-    gmap.draw( "map13.html" ) 
+    gmap.draw( "map13.html" )
+    webbrowser.open("map13.html",new=2)
