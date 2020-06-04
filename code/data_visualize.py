@@ -7,45 +7,25 @@ from itertools import cycle
 import webbrowser
 from sklearn.model_selection import train_test_split
 
-def cargarCSV(csv):
-    latitude_list = []
-    longitude_list = []
-    distrito = []
+def cargarCSV(csv, cols):
+    data = [[] for _ in range(len(cols))]
+    resultado = []
     with open(csv, 'r') as read_obj:
         csv_reader = reader(read_obj)
         list_of_rows = list(csv_reader)
     for item in list_of_rows:
-        latitude_list.append(float(item[1]))
-        longitude_list.append(float(item[3]))
-    distrito.append(latitude_list)
-    distrito.append(longitude_list)
-    return distrito
+        for i in range(len(cols)):
+            data[i].append(float(item[cols[i]]))
+    for i in range(len(cols)):
+        resultado.append(data[i])
+    return resultado
 
-def cargarCSVHospitales(csv):
-    latitude_list = []
-    longitude_list = []
-    numeroCamas = []
-    uci = []
-    hospital = []
-    with open(csv, 'r') as read_obj:
-        csv_reader = reader(read_obj)
-        list_of_rows = list(csv_reader)
-    for item in list_of_rows:
-        latitude_list.append(float(item[2]))
-        longitude_list.append(float(item[3]))
-        numeroCamas.append(int(item[5]))
-        uci.append(int(item[4]))
-    hospital.append(latitude_list)
-    hospital.append(longitude_list)
-    hospital.append(numeroCamas)
-    hospital.append(uci)
-    return hospital
-
-miraflores = cargarCSV('..\csv files\Miraflores.csv')
-sanIsidro = cargarCSV('..\csv files\SanIsidro.csv')
-surquillo = cargarCSV('..\csv files\Surquillo.csv')
-magdalena = cargarCSV('..\csv files\Magdalena.csv')
-hospitales = cargarCSVHospitales('..\csv files\Hospitales+Camas.txt')
+miraflores = cargarCSV('..\csv files\Miraflores.csv', [1,3])
+sanIsidro = cargarCSV('..\csv files\SanIsidro.csv', [1,3])
+surquillo = cargarCSV('..\csv files\Surquillo.csv', [1,3])
+magdalena = cargarCSV('..\csv files\Magdalena.csv', [1,3])
+hospitales = cargarCSV('..\csv files\Hospitales+Camas.txt', [2,3,5,4])
+contagio = cargarCSV('..\csv files\severidad.txt',[0])
 p = []
 p.append(miraflores)
 p.append(sanIsidro)
@@ -53,53 +33,45 @@ p.append(surquillo)
 p.append(magdalena)
 
 n_pacientes = 0
-n_hospitales = 0
 pacientes_loc = []
-hospitales_loc = []
 n_camas_en_hospitales = []
 pacientes_contagio = []
 
-pacientes = [] #Localizacion Pacientes
+pacientes = [[],[]] #Localizacion Pacientes
 for distrito in p:
     for i in range(len(distrito[0])):
-        pacientes.append((distrito[0][i]*100, distrito[1][i]*100))
+        pacientes[0].append((distrito[0][i]*100, distrito[1][i]*100))
+for sev in contagio[0]:
+    pacientes[1].append(sev)
 h = [] #Localizacion Hospitales
 for i in range(len(hospitales[0])):
     h.append((hospitales[0][i]*100, hospitales[1][i]*100))
 n_hospitales = len(h) #Numero de hospitales
 hospitales_loc = h
+camasuci = [] #Camas por hospital
+camas = []
+for i in range(len(hospitales[2])):
+    camasuci.append(int(hospitales[3][i]))
+    camas.append(int(hospitales[2][i]) + int(hospitales[3][i]))
+paciente ,hospitalizar = train_test_split(pacientes[0],test_size=0.1)
+paciente, pcontag = train_test_split(pacientes[1],test_size=0.1)
 
-def generar_datos(case):
-    camas = [] #Camas por hospital
-    for i in range(len(hospitales[2])):
-        if case == 0:
-            camas.append(hospitales[3][i])
-        elif case == 1:
-            camas.append(hospitales[2][i] + hospitales[3][i])
+def asignar_datos(case):
     if case == 0:
-        hospitalizar = pacientes
+        n_pacientes = len(pacientes[0]) #Numero de pacientes
+        n_camas_en_hospitales = camasuci
+        n_camas_total = sum(n_camas_en_hospitales) #Numero de camas en total
+        # Localizacion
+        pacientes_loc = pacientes[0]
+        pacientes_contagio = pacientes[1]
     elif case == 1:
-        paciente ,hospitalizar = train_test_split(pacientes,test_size=0.1)    
-    n_pacientes = len(hospitalizar) #Numero de pacientes
-    n_camas_en_hospitales = camas
-    n_camas_total = sum(n_camas_en_hospitales) #Numero de camas en total
-    # Localizacion
-    pacientes_loc = hospitalizar
-    #grado de contagio
-    pacientes_contagio = [0 for _ in range(n_pacientes)]
-    for i in range(n_pacientes):
-        probgrado = random.random()
-        if probgrado <= 0.202: #Asymptomatic 20.2%
-            pacientes_contagio[i] = 1
-        elif probgrado > 0.202 and probgrado <= 0.549: #Mild 34.7%
-            pacientes_contagio[i] = 2
-        elif probgrado > 0.549 and probgrado <= 0.801: #Strong 25.2%
-            pacientes_contagio[i] = 3
-        elif probgrado > 0.801 and probgrado <= 0.939: #Hospitalization 13.8%
-            pacientes_contagio[i] = 4
-        elif probgrado > 0.939: #UCI 6.1%
-            pacientes_contagio[i] = 5
-    return n_camas_en_hospitales, pacientes_contagio, pacientes_loc, hospitales_loc
+        n_pacientes = len(hospitalizar) #Numero de pacientes
+        n_camas_en_hospitales = camas
+        n_camas_total = sum(n_camas_en_hospitales) #Numero de camas en total
+        # Localizacion
+        pacientes_loc = hospitalizar
+        pacientes_contagio = pcontag
+    return n_camas_en_hospitales, pacientes_contagio, pacientes_loc
 
 def visualize_data(pacientes_contagio, pacientes_loc, hospitales_loc):
     sombra_contagio = [int(sev*255/5) for sev in pacientes_contagio]

@@ -42,20 +42,20 @@ Casos.current(0)
 Casos.place(x=100, y=70)
 
 def vdata():
-    nh, pc, plo, hlo = generar_datos(Casos.current())
-    visualize_data(pc, plo, hlo)
+    nh, pc, plo = asignar_datos(Casos.current())
+    visualize_data(pc, plo, hospitales_loc)
 
 def vmap():
     visualize_map()
 
 def vsolution():
-    nh, pc, plo, hlo = generar_datos(Casos.current())
-    pl,np,t = OrganizePandemic(nh, pc, plo, hlo,CHvar.current(), CHval.current())
+    nh, pc, plo = asignar_datos(Casos.current())
+    pl,np,t = OrganizePandemic(nh, pc, plo,hospitales_loc,CHvar.current(), CHval.current())
     npaci.set(np)
     time.set(t)
     if pl != 0:
         visualiza_solumap(pl)
-        visualize_solution(pc, plo, hlo, pl)
+        visualize_solution(pc, plo, hospitales_loc, pl)
 
 Button(raiz, text="Ver datos del problema", command=vdata).place(x = 100, y=120)
 Button(raiz, text="Ver mapa con los datos", command=vmap).place(x = 270, y=120)
