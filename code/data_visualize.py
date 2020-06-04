@@ -85,7 +85,6 @@ def generar_datos(case):
     n_camas_total = sum(n_camas_en_hospitales) #Numero de camas en total
     # Localizacion
     pacientes_loc = hospitalizar
-    print(n_pacientes, n_camas_total)
     #grado de contagio
     pacientes_contagio = [0 for _ in range(n_pacientes)]
     for i in range(n_pacientes):
