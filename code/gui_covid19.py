@@ -46,8 +46,7 @@ def vdata():
     visualize_data(pc, plo, hlo)
 
 def vmap():
-    nh, pc, plo, hlo = generar_datos(Casos.current())
-    visualize_map(plo)
+    visualize_map()
 
 def vsolution():
     nh, pc, plo, hlo = generar_datos(Casos.current())
@@ -55,7 +54,7 @@ def vsolution():
     npaci.set(np)
     time.set(t)
     if pl != 0:
-        visualiza_solumap(plo, pl)
+        visualiza_solumap(pl)
         visualize_solution(pc, plo, hlo, pl)
 
 Button(raiz, text="Ver datos del problema", command=vdata).place(x = 100, y=120)

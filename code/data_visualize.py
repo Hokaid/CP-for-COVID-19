@@ -126,28 +126,24 @@ def visualize_solution(pacientes_contagio, pacientes_loc, hospitales_loc, plot_l
     plt.axis('off')
     plt.show()
 
-def visualize_map(pacientes_loc):
-    infectados = [[],[]]
-    for i in range(len(pacientes_loc)):
-        a,b = pacientes_loc[i]
-        infectados[0].append(a/100)
-        infectados[1].append(b/100)
-    gmap = gmplot.GoogleMapPlotter(-12.1103929, -77.0347696, 14)
-    gmap.scatter( infectados[0], infectados[1], '#999900', size = 20, marker = False )
-    gmap.scatter( hospitales[0], hospitales[1], '#000000', size = 100, marker = False )
+def visualize_map():
+    gmap = gmplot.GoogleMapPlotter(-12.1103929, -77.0347696, 14)    
+    gmap.scatter( hospitales[0], hospitales[1], '#000080', size = 100, marker = False ) 
+    gmap.scatter( miraflores[0], miraflores[1], '#FF3333', size = 20, marker = False ) 
+    gmap.scatter( sanIsidro[0], sanIsidro[1], '#006633', size = 20, marker = False ) 
+    gmap.scatter( surquillo[0], surquillo[1], '#CC0066', size = 20, marker = False ) 
+    gmap.scatter( magdalena[0], magdalena[1], '#999900', size = 20, marker = False ) 
     gmap.apikey = "AIzaSyA_2cjPy9AbF1aU1pa1oOo7_JmezBCy01c"
     gmap.draw( "map13.html" )
     webbrowser.open("map13.html",new=2)
 
-def visualiza_solumap(pacientes_loc, resultado):
-    infectados = [[],[]]
-    for i in range(len(pacientes_loc)):
-        a,b = pacientes_loc[i]
-        infectados[0].append(a/100)
-        infectados[1].append(b/100)
+def visualiza_solumap(resultado):
     gmap = gmplot.GoogleMapPlotter(-12.1103929, -77.0347696, 14)    
-    gmap.scatter( hospitales[0], hospitales[1], '#000080', size = 100, marker = False )
-    gmap.scatter( infectados[0], infectados[1], '#999900', size = 20, marker = False )
+    gmap.scatter( hospitales[0], hospitales[1], '#000080', size = 100, marker = False ) 
+    gmap.scatter( miraflores[0], miraflores[1], '#FF3333', size = 20, marker = False ) 
+    gmap.scatter( sanIsidro[0], sanIsidro[1], '#006633', size = 20, marker = False ) 
+    gmap.scatter( surquillo[0], surquillo[1], '#CC0066', size = 20, marker = False ) 
+    gmap.scatter( magdalena[0], magdalena[1], '#999900', size = 20, marker = False ) 
     colores = ['#FF0000','#808000','#FFA07A','#5B2C6F','#5367F4','#B8369F','#1A1362','#A04020','#117A65','#000000']
     for i in range(10):
         for (x_, y_) in resultado[i]:
